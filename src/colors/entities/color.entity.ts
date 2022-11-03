@@ -2,16 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class Num extends Document {
+export class Color extends Document {
   @Prop({
     unique: true,
+    required: true,
+    type: String,
   })
-  num: number;
-
-  @Prop({
-    default: false,
-  })
-  inUse: boolean;
+  name: string;
 
   @Prop({
     default: true,
@@ -19,4 +16,4 @@ export class Num extends Document {
   status: boolean;
 }
 
-export const NumSchema = SchemaFactory.createForClass(Num);
+export const ColorSchema = SchemaFactory.createForClass(Color);

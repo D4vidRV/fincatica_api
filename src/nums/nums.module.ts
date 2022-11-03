@@ -15,5 +15,6 @@ import { Num, NumSchema } from './entities/num.entity';
       },
     ]),
   ],
+  exports: [MongooseModule],
 })
 export class NumsModule {}

@@ -4,15 +4,26 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NumsModule } from './nums/nums.module';
 import { CommonModule } from './common/common.module';
+import { SeedModule } from './seed/seed.module';
+import { ConfigModule } from '@nestjs/config';
+import { EnvConfiguration } from './config/app.config';
+import { ColorsModule } from './colors/colors.module';
+import { AnimalsModule } from './animals/animals.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      load: [EnvConfiguration],
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017/fincaticadb'),
+    MongooseModule.forRoot(process.env.MONGODB),
     NumsModule,
     CommonModule,
+    SeedModule,
+    ColorsModule,
+    AnimalsModule,
   ],
 })
 export class AppModule {}

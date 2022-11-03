@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { NumsService } from './nums.service';
 import { CreateNumDto } from './dto/create-num.dto';
 import { UpdateNumDto } from './dto/update-num.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id/parse-mongo-id.pipe';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('nums')
 export class NumsController {
@@ -22,8 +24,8 @@ export class NumsController {
   }
 
   @Get()
-  findAll() {
-    return this.numsService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.numsService.findAll(paginationDto);
   }
 
   @Get(':term')

@@ -10,6 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { CreateNumDto } from './dto/create-num.dto';
 import { UpdateNumDto } from './dto/update-num.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class NumsService {
@@ -35,8 +36,17 @@ export class NumsService {
     }
   }
 
-  async findAll() {
-    return `This action returns all nums`;
+  async findAll(paginationDto: PaginationDto) {
+    const { limit, offset } = paginationDto;
+
+    return await this.numModel
+      .find()
+      .limit(limit)
+      .skip(offset)
+      .sort({
+        num: 1,
+      })
+      .select('-__v');
   }
 
   async findOne(term: string) {
