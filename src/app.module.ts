@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EnvConfiguration } from './config/app.config';
 import { ColorsModule } from './colors/colors.module';
 import { AnimalsModule } from './animals/animals.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AnimalsModule } from './animals/animals.module';
     SeedModule,
     ColorsModule,
     AnimalsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
