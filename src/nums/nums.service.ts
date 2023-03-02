@@ -39,7 +39,7 @@ export class NumsService {
   async findAll(paginationDto: PaginationDto) {
     const { limit, offset } = paginationDto;
 
-    return await this.numModel
+    const numbers = await this.numModel
       .find()
       .limit(limit)
       .skip(offset)
@@ -47,6 +47,8 @@ export class NumsService {
         num: 1,
       })
       .select('-__v');
+
+    return { numbers };
   }
 
   async findOne(term: string) {

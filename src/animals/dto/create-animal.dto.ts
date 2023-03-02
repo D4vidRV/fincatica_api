@@ -1,4 +1,12 @@
-import { IsDate, IsInt, IsNumber, IsPositive, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class CreateAnimalDto {
   @IsInt()
@@ -15,4 +23,7 @@ export class CreateAnimalDto {
   @IsNumber()
   @IsPositive()
   entry_price: number;
+  @IsBoolean()
+  @IsOptional()
+  status: boolean;
 }

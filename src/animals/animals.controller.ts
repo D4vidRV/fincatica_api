@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Optional,
 } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AnimalsService } from './animals.service';
@@ -25,6 +26,20 @@ export class AnimalsController {
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
     return this.animalsService.findAll(paginationDto);
+  }
+
+  @Get('/current')
+  findCurrentsAnimals(@Query() paginationDto: PaginationDto) {
+    return this.animalsService.findCurrentsAnimals(paginationDto);
+  }
+
+  @Get('/findyear/:year')
+  findByYearMonthAndNumber(
+    @Param('year') year: number,
+    @Optional() @Query('month') month?: number,
+    @Optional() @Query('num') num?: number,
+  ) {
+    return this.animalsService.findByYearMonthAndNumber(year, month, num);
   }
 
   @Get(':term')

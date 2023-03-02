@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, model, Model } from 'mongoose';
@@ -10,7 +11,7 @@ import { Num } from 'src/nums/entities/num.entity';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
 import { Animal } from './entities/animal.entity';
-// import moment from 'moment';
+
 import * as moment from 'moment';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
@@ -98,7 +99,20 @@ export class AnimalsService {
       .limit(limit)
       .skip(offset)
       .sort({
-        entry_date: 1,
+        internal_number: 1,
+      });
+    return { animals };
+  }
+
+  async findCurrentsAnimals(paginationDto: PaginationDto) {
+    const { limit, offset } = paginationDto;
+    const animals = await this.animalModel
+      .find({ status: true, departure_date: null })
+      .populate('internal_number', 'num')
+      .limit(limit)
+      .skip(offset)
+      .sort({
+        internal_number: 1,
       });
     return { animals };
   }
@@ -120,6 +134,127 @@ export class AnimalsService {
     }
 
     return animal;
+  }
+
+  async findByYearMonthAndNumber(y: number, m?: number, num: number = 0) {
+    console.log(y, m, num);
+
+    let animal;
+
+    // const query = this.animalModel.createQueryBuilder()
+
+    if (!isNaN(+m) && !isNaN(+num)) {
+      // Find by year, month and number
+      console.log('Buscando por todo');
+
+      animal = await this.animalModel.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                internal_number: num,
+              },
+            ],
+            $expr: {
+              $and: [
+                {
+                  $eq: [
+                    { $year: '$entry_date' },
+                    { $year: new Date(`${y}-01-01`) },
+                  ],
+                },
+                {
+                  $eq: [
+                    { $month: '$entry_date' },
+                    { $month: new Date(`${y}-${m}-12`) },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      ]);
+
+      if (!animal) {
+        throw new NotFoundException(`The aniaml with year ${y} not found`);
+      }
+
+      return { animals: animal };
+    }
+
+    if (!isNaN(+m) && isNaN(+num)) {
+      // Find by year and month
+      console.log('Buscando por año y mes');
+
+      animal = await this.animalModel.find({
+        $expr: {
+          $and: [
+            {
+              $eq: [
+                { $year: '$entry_date' },
+                { $year: new Date(`${y}-01-01`) },
+              ],
+            },
+            {
+              $eq: [
+                { $month: '$entry_date' },
+                { $month: new Date(`${y}-${m}-12`) },
+              ],
+            },
+          ],
+        },
+      });
+      if (!animal) {
+        throw new NotFoundException(`The aniaml with year ${y} not found`);
+      }
+
+      return { animals: animal };
+    }
+    if (!isNaN(+num) && isNaN(+m)) {
+      // Find by year and number
+      console.log('Buscando por año y numero');
+      animal = await this.animalModel.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                internal_number: num,
+              },
+            ],
+            $expr: {
+              $and: [
+                {
+                  $eq: [
+                    { $year: '$entry_date' },
+                    { $year: new Date(`${y}-01-01`) },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      ]);
+
+      if (!animal) {
+        throw new NotFoundException(`The aniaml with year ${y} not found`);
+      }
+
+      return { animals: animal };
+    }
+    // Find by year
+    console.log('Buscando por año');
+
+    animal = await this.animalModel.find({
+      $expr: {
+        $eq: [{ $year: '$entry_date' }, { $year: new Date(`${y}-01-01`) }],
+      },
+    });
+
+    if (!animal) {
+      throw new NotFoundException(`The aniaml with year ${y} not found`);
+    }
+
+    return { animals: animal };
   }
 
   async update(id: string, updateAnimalDto: UpdateAnimalDto) {
