@@ -33,9 +33,9 @@ export class AnimalsController {
     return this.animalsService.findCurrentsAnimals(paginationDto);
   }
 
-  @Get('/findyear/:year')
+  @Get('/filter')
   findByYearMonthAndNumber(
-    @Param('year') year: number,
+    @Optional() @Query('year') year?: number,
     @Optional() @Query('month') month?: number,
     @Optional() @Query('num') num?: number,
   ) {

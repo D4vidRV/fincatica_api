@@ -58,7 +58,7 @@ export class AuthService {
 
     const user = await this.userModel
       .findOne({ email })
-      .select(['name', 'email', 'password']);
+      .select(['name', , 'lastname', 'email', 'rol', 'password']);
 
     if (!user) {
       throw new UnauthorizedException(`Credentials are no valid`);

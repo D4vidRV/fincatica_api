@@ -28,6 +28,16 @@ export class NumsController {
     return this.numsService.findAll(paginationDto);
   }
 
+  @Get('free')
+  findfreeNumbers(@Query() paginationDto: PaginationDto) {
+    return this.numsService.findfreeNumbers(paginationDto);
+  }
+
+  @Get('taken')
+  findtakenNumbers(@Query() paginationDto: PaginationDto) {
+    return this.numsService.findtakenNumbers(paginationDto);
+  }
+
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.numsService.findOne(term);

@@ -37,6 +37,7 @@ export class AnimalsService {
 
     number = await this.numModel.findOne({
       num: createAnimalDto.internal_number,
+      // TODO: Implement number available validation
     });
 
     // If number is a valid MongoId
@@ -68,7 +69,7 @@ export class AnimalsService {
       );
 
     // Create unique number whith internal number + date
-    const date = moment(createAnimalDto.entry_date).format('DD-MM-YYYY');
+    const date = moment(createAnimalDto.entry_date).format('DD-MM-YYYY-HH-mm-ss');
 
     const unique_number = `N${number.num}F${date}`;
 
@@ -130,7 +131,7 @@ export class AnimalsService {
     }
 
     if (!animal) {
-      throw new NotFoundException(`The aniaml with term ${term} not found`);
+      throw new NotFoundException(`The animal with term ${term} not found`);
     }
 
     return animal;
@@ -140,8 +141,6 @@ export class AnimalsService {
     console.log(y, m, num);
 
     let animal;
-
-    // const query = this.animalModel.createQueryBuilder()
 
     if (!isNaN(+m) && !isNaN(+num)) {
       // Find by year, month and number

@@ -51,6 +51,36 @@ export class NumsService {
     return { numbers };
   }
 
+  async findfreeNumbers(paginationDto: PaginationDto) {
+    const { limit, offset } = paginationDto;
+
+    const numbers = await this.numModel
+      .find({ inUse: false })
+      .limit(limit)
+      .skip(offset)
+      .sort({
+        num: 1,
+      })
+      .select('-__v');
+
+    return { numbers };
+  }
+
+  async findtakenNumbers(paginationDto: PaginationDto) {
+    const { limit, offset } = paginationDto;
+
+    const numbers = await this.numModel
+      .find({ inUse: true })
+      .limit(limit)
+      .skip(offset)
+      .sort({
+        num: 1,
+      })
+      .select('-__v');
+
+    return { numbers };
+  }
+
   async findOne(term: string) {
     let number: Num;
 

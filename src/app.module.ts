@@ -10,6 +10,7 @@ import { EnvConfiguration } from './config/app.config';
 import { ColorsModule } from './colors/colors.module';
 import { AnimalsModule } from './animals/animals.module';
 import { AuthModule } from './auth/auth.module';
+import { AuctionsModule } from './auctions/auctions.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
     ColorsModule,
     AnimalsModule,
     AuthModule,
+    AuctionsModule,
   ],
 })
 export class AppModule {}

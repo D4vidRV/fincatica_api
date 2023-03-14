@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Color } from 'src/colors/entities/color.entity';
-import { Num } from 'src/nums/entities/num.entity';
 
 @Schema()
 export class Animal extends Document {
@@ -25,6 +23,8 @@ export class Animal extends Document {
   departure_weight: number;
   @Prop({ type: Number })
   departure_price: number;
+  @Prop({ type: String })
+  image_path: string;
   @Prop({ type: Boolean, default: true })
   status: boolean;
 }

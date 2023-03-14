@@ -26,4 +26,7 @@ export class CreateAnimalDto {
   @IsBoolean()
   @IsOptional()
   status: boolean;
+  @IsString()
+  @IsOptional()
+  image_path: string;
 }
