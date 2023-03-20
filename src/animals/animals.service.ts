@@ -14,6 +14,8 @@ import { Animal } from './entities/animal.entity';
 
 import * as moment from 'moment';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { weightData } from './entities/weight.entity';
+import { consumptionData } from './entities/consumption.entity';
 
 @Injectable()
 export class AnimalsService {
@@ -27,8 +29,6 @@ export class AnimalsService {
   ) {}
 
   async create(createAnimalDto: CreateAnimalDto) {
-    console.log(`${createAnimalDto.color}`);
-    console.log(`${createAnimalDto.internal_number}`);
 
     // Recibir el numero por mongoId o por numero
 
@@ -69,7 +69,9 @@ export class AnimalsService {
       );
 
     // Create unique number whith internal number + date
-    const date = moment(createAnimalDto.entry_date).format('DD-MM-YYYY-HH-mm-ss');
+    const date = moment
+      .utc(createAnimalDto.entry_date)
+      .format('YYYY-MM-DD-HH-mm-ss');
 
     const unique_number = `N${number.num}F${date}`;
 
@@ -80,6 +82,12 @@ export class AnimalsService {
       const animal = await this.animalModel.create({
         ...createAnimalDto,
         unique_number,
+        weight_history: [
+          {
+            date: createAnimalDto.entry_date,
+            weight: createAnimalDto.entry_weight,
+          },
+        ],
       });
       return animal;
     } catch (error) {
@@ -103,6 +111,31 @@ export class AnimalsService {
         internal_number: 1,
       });
     return { animals };
+  }
+
+  async findTotalAnimals() {
+    const count = await this.animalModel
+      .countDocuments({ departure_date: { $eq: null } })
+      .exec();
+    return count;
+  }
+
+  async findTotalMale() {
+    const count = await this.animalModel
+      .countDocuments({
+        gender: 'M',
+        departure_date: null,
+      })
+      .exec();
+
+    return count;
+  }
+
+  async findTotalAFemale() {
+    const count = await this.animalModel
+      .countDocuments({ gender: 'H', departure_date: null })
+      .exec();
+    return count;
   }
 
   async findCurrentsAnimals(paginationDto: PaginationDto) {
@@ -138,7 +171,6 @@ export class AnimalsService {
   }
 
   async findByYearMonthAndNumber(y: number, m?: number, num: number = 0) {
-    console.log(y, m, num);
 
     let animal;
 
@@ -259,9 +291,26 @@ export class AnimalsService {
   async update(id: string, updateAnimalDto: UpdateAnimalDto) {
     let animal;
     if (isValidObjectId(id)) {
-      animal = this.animalModel.findByIdAndUpdate(id, updateAnimalDto, {
-        new: true,
-      });
+      animal = await this.animalModel.findById(id);
+      if (!animal) {
+        throw new NotFoundException(`The animal with id ${id} not found`);
+      }
+
+      // Si se proporciona el campo departure_weight en el objeto updateAnimalDto
+      if (updateAnimalDto.departure_weight) {
+        // Creamos un nuevo objeto de historial de peso con el campo departure_date y departure_weight
+        const weightHistoryRecord = {
+          date: updateAnimalDto.departure_date || new Date(),
+          weight: updateAnimalDto.departure_weight,
+        };
+
+        // Agregamos el objeto weightHistoryRecord al array weight_history del animal
+        animal.weight_history.unshift(weightHistoryRecord);
+      }
+
+      // Actualizamos el animal en la base de datos con el objeto updateAnimalDto
+      animal.set(updateAnimalDto);
+      await animal.save();
     }
 
     if (!animal) {
@@ -282,5 +331,30 @@ export class AnimalsService {
     }
 
     return;
+  }
+
+  async addWeightHistory(animalId: string, weightObj: weightData) {
+    const animal = await this.animalModel.findById(animalId).exec();
+
+    if (!animal) {
+      throw new Error(`Animal with ID ${animalId} not found`);
+    }
+
+    animal.weight_history.unshift(weightObj);
+    return animal.save();
+  }
+
+  async addConsumptiontHistory(
+    animalId: string,
+    consumptiontObj: consumptionData,
+  ) {
+    const animal = await this.animalModel.findById(animalId).exec();
+
+    if (!animal) {
+      throw new Error(`Animal with ID ${animalId} not found`);
+    }
+
+    animal.consumption_history.unshift(consumptiontObj);
+    return animal.save();
   }
 }

@@ -11,6 +11,8 @@ export class Animal extends Document {
   gender: string;
   @Prop({ type: String, required: true })
   color: string;
+  @Prop({ type: String })
+  image_path: string;
   @Prop({ type: Date, required: true })
   entry_date: Date;
   @Prop({ type: Number, required: true })
@@ -19,12 +21,16 @@ export class Animal extends Document {
   entry_price: number;
   @Prop({ type: Date })
   departure_date: Date;
+  // weight history
+  @Prop([{ date: Date, weight: Number }])
+  weight_history: { date: Date; weight: number }[];
+  // consumption history
+  @Prop([{ date: Date, price: Number, description: String }])
+  consumption_history: { date: Date; price: number; description: string }[];
   @Prop({ type: Number })
   departure_weight: number;
   @Prop({ type: Number })
   departure_price: number;
-  @Prop({ type: String })
-  image_path: string;
   @Prop({ type: Boolean, default: true })
   status: boolean;
 }

@@ -29,4 +29,10 @@ export class CreateAnimalDto {
   @IsString()
   @IsOptional()
   image_path: string;
+
+  @IsOptional()
+  weight_history: { date: Date; weight: number }[];
+
+  @IsOptional()
+  consumption_history: { date: Date; price: number; description: string }[];
 }

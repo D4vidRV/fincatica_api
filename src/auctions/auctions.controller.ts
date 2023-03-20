@@ -39,16 +39,16 @@ export class AuctionsController {
     return this.auctionsService.getYearsByAuction(auction_name);
   }
 
-  @Get('/months_by_auction_and_year')
-  getMonthsByAuctionAndYear(
+  @Get('/months_by_name_and_year')
+  getMonthsByNameAndYear(
     @Query('auction_name') auction_name?: string,
     @Query('year') year?: number,
   ) {
-    return this.auctionsService.getMonthsByAuctionAndYear(auction_name, year);
+    return this.auctionsService.getMonthsByNameAndYear(auction_name, year);
   }
 
-  @Get('/prices_by_name_and_date')
-  getPricesByNameYearMonth(
+  @Get('/auctions_by_name_and_date')
+  getAuctionDatesByNameYearMonth(
     @Query('auction_name') auction_name?: string,
     @Query('year') year?: number,
     @Query('month') month?: number,
@@ -58,6 +58,14 @@ export class AuctionsController {
       year,
       month,
     );
+  }
+
+  @Get('/prices_by_name_and_auction')
+  findPricesByNameAndAuction(
+    @Query('auction_name') auction_name?: string,
+    @Query('date') date?: Date,
+  ) {
+    return this.auctionsService.findPricesByNameAndAuction(auction_name, date);
   }
   // @Get(':id')
   // findOne(@Param('id') id: string) {

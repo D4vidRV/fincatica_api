@@ -18,4 +18,5 @@ export class UpdateAnimalDto extends PartialType(CreateAnimalDto) {
   @IsBoolean()
   @IsOptional()
   status: boolean;
+
 }

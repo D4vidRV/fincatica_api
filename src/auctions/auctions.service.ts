@@ -39,7 +39,7 @@ export class AuctionsService {
       },
     ]);
 
-    return auctionPrices;
+    return auctionPrices[0];
   }
 
   async getYearsByAuction(auctionName: string) {
@@ -55,10 +55,10 @@ export class AuctionsService {
       { $project: { _id: 0, years: 1 } },
     ]);
 
-    return auctionYears;
+    return auctionYears[0];
   }
 
-  async getMonthsByAuctionAndYear(auctionName: string, year: number) {
+  async getMonthsByNameAndYear(auctionName: string, year: number) {
     const result = await this.auctionModel.aggregate([
       { $match: { name: auctionName } },
       { $unwind: '$prices' },
@@ -72,7 +72,7 @@ export class AuctionsService {
       { $project: { _id: 0, months: 1 } },
     ]);
 
-    return result;
+    return result[0];
   }
 
   async getAuctionDatesByNameYearMonth(
@@ -88,7 +88,7 @@ export class AuctionsService {
     const filteredPrices = auction.prices.filter((price) => {
       const priceDate = new Date(price.date);
       return (
-        priceDate.getFullYear() === year && priceDate.getMonth() === month - 1
+        priceDate.getFullYear() === year && priceDate.getUTCMonth() === month - 1
       );
     });
 
@@ -98,18 +98,20 @@ export class AuctionsService {
       dateSet.add(price.date.toISOString().substring(0, 10));
     });
 
-    return Array.from(dateSet);
+    const result = {
+      dates: Array.from(dateSet),
+    };
+    return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auction`;
-  }
-
-  update(id: number, updateAuctionDto: UpdateAuctionDto) {
-    return `This action updates a #${id} auction`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auction`;
+  async findPricesByNameAndAuction(auctionName: string, date: Date) {
+    const auction = await this.auctionModel.findOne({ name: auctionName });
+    if (!auction) {
+      throw new Error(`No se encontró subasta con el nombre ${auctionName}`); // No se encontró la subasta con el nombre proporcionado
+    }
+    const prices = auction.prices.filter(
+      (price) => price.date.getTime() === date.getTime(),
+    );
+    return { prices };
   }
 }
