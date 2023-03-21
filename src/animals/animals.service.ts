@@ -29,7 +29,6 @@ export class AnimalsService {
   ) {}
 
   async create(createAnimalDto: CreateAnimalDto) {
-
     // Recibir el numero por mongoId o por numero
 
     // if number is a number
@@ -50,7 +49,7 @@ export class AnimalsService {
         `The number whit id ${createAnimalDto.internal_number} not exits in db`,
       );
 
-    // Recibir el color por nombre o por MongoId
+    // Receive color by mongoid or name
     let color: Color;
 
     // if color is a color name
@@ -171,12 +170,10 @@ export class AnimalsService {
   }
 
   async findByYearMonthAndNumber(y: number, m?: number, num: number = 0) {
-
     let animal;
 
     if (!isNaN(+m) && !isNaN(+num)) {
       // Find by year, month and number
-      console.log('Buscando por todo');
 
       animal = await this.animalModel.aggregate([
         {
@@ -215,7 +212,6 @@ export class AnimalsService {
 
     if (!isNaN(+m) && isNaN(+num)) {
       // Find by year and month
-      console.log('Buscando por año y mes');
 
       animal = await this.animalModel.find({
         $expr: {
@@ -267,13 +263,12 @@ export class AnimalsService {
       ]);
 
       if (!animal) {
-        throw new NotFoundException(`The aniaml with year ${y} not found`);
+        throw new NotFoundException(`The animal with year ${y} not found`);
       }
 
       return { animals: animal };
     }
     // Find by year
-    console.log('Buscando por año');
 
     animal = await this.animalModel.find({
       $expr: {
@@ -296,19 +291,19 @@ export class AnimalsService {
         throw new NotFoundException(`The animal with id ${id} not found`);
       }
 
-      // Si se proporciona el campo departure_weight en el objeto updateAnimalDto
+      // If field departure_weight is provided in the object updateAnimalDTO
       if (updateAnimalDto.departure_weight) {
-        // Creamos un nuevo objeto de historial de peso con el campo departure_date y departure_weight
+        //Create a new weight history object with field departurte_date and departure weight
         const weightHistoryRecord = {
           date: updateAnimalDto.departure_date || new Date(),
           weight: updateAnimalDto.departure_weight,
         };
 
-        // Agregamos el objeto weightHistoryRecord al array weight_history del animal
+        // Agregate the new object weightHistory to array weight_history of animal.
         animal.weight_history.unshift(weightHistoryRecord);
       }
 
-      // Actualizamos el animal en la base de datos con el objeto updateAnimalDto
+      // Update the animal in BD
       animal.set(updateAnimalDto);
       await animal.save();
     }

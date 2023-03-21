@@ -27,7 +27,6 @@ export class AnimalsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAnimalDto: UpdateAnimalDto) {
-    console.log('Lamado el update del controller!');
 
     return this.animalsService.update(id, updateAnimalDto);
   }

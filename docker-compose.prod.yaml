@@ -1,31 +1,15 @@
 version: '3'
 
 services:
-  fincatica-backendapp:
-    depends_on:
-      - db
+  fincatica-backend:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: fincaticabackend-docker
-    container_name: fincatica-backendapp
+    image: fincaticabackend:1.0.0
+    container_name: fincatica-backend
     restart: always # reiniciar el contenedor si se detiene
     ports:
       - "${PORT}:${PORT}"
-    # working_dir: /var/www/pokedex
     environment:
       MONGODB: ${MONGODB}
       PORT: ${PORT}
-    # volumes:
-    #   - ./:/var/www/pokedex
-
-  db:
-    image: mongo:5.0.0
-    container_name: mongo-fincatica
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      MONGODB_DATABASE: fincaticadb
-    volumes:
-      - ./mongo:/data/db

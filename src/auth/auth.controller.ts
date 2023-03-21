@@ -45,8 +45,6 @@ export class AuthController {
     @GetUser() user: User,
     @GetUser('email') userEmail: string,
   ) {
-    // console.log({ user });
-
     return {
       ok: true,
       user,
