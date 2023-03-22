@@ -12,10 +12,6 @@ export class AuctionsService {
     private readonly auctionModel: Model<Auction>,
   ) {}
 
-  create(createAuctionDto: CreateAuctionDto) {
-    return 'This action adds a new auction';
-  }
-
   async getAllAuctionNames() {
     const auctionNames = await this.auctionModel.find().select('name').exec();
 

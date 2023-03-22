@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Animal, AnimalSchema } from './entities/animal.entity';
 import { NumsModule } from 'src/nums/nums.module';
 import { ColorsModule } from 'src/colors/colors.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [AnimalsController],
@@ -18,6 +19,7 @@ import { ColorsModule } from 'src/colors/colors.module';
     ]),
     NumsModule,
     ColorsModule,
+    AuthModule,
   ],
 })
 export class AnimalsModule {}

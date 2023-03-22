@@ -8,7 +8,9 @@ import {
   Delete,
   Query,
   Optional,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AnimalsService } from './animals.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';
@@ -21,27 +23,31 @@ export class AnimalsController {
   constructor(private readonly animalsService: AnimalsService) {}
 
   @Post('/animal')
+  @UseGuards(AuthGuard())
   create(@Body() createAnimalDto: CreateAnimalDto) {
     return this.animalsService.create(createAnimalDto);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard())
   update(@Param('id') id: string, @Body() updateAnimalDto: UpdateAnimalDto) {
-
     return this.animalsService.update(id, updateAnimalDto);
   }
 
   @Get()
+  @UseGuards(AuthGuard())
   findAll(@Query() paginationDto: PaginationDto) {
     return this.animalsService.findAll(paginationDto);
   }
 
   @Get('/current')
+  @UseGuards(AuthGuard())
   findCurrentsAnimals(@Query() paginationDto: PaginationDto) {
     return this.animalsService.findCurrentsAnimals(paginationDto);
   }
 
   @Get('/filter')
+  @UseGuards(AuthGuard())
   findByYearMonthAndNumber(
     @Optional() @Query('year') year?: number,
     @Optional() @Query('month') month?: number,
@@ -70,6 +76,7 @@ export class AnimalsController {
   }
 
   @Post(':id/weight-history')
+  @UseGuards(AuthGuard())
   async addWeightHistory(
     @Param('id') id: string,
     @Body() weightData: weightData,
@@ -78,6 +85,7 @@ export class AnimalsController {
   }
 
   @Post(':id/consumption-history')
+  @UseGuards(AuthGuard())
   async addConsumptiontHistory(
     @Param('id') id: string,
     @Body() weightData: consumptionData,
@@ -86,6 +94,7 @@ export class AnimalsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard())
   remove(@Param('id') id: string) {
     return this.animalsService.remove(id);
   }

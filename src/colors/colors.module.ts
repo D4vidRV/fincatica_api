@@ -3,6 +3,7 @@ import { ColorsService } from './colors.service';
 import { ColorsController } from './colors.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Color, ColorSchema } from './entities/color.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [ColorsController],
@@ -14,6 +15,7 @@ import { Color, ColorSchema } from './entities/color.entity';
         schema: ColorSchema,
       },
     ]),
+    AuthModule,
   ],
   exports: [MongooseModule],
 })

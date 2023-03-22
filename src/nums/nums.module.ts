@@ -3,6 +3,7 @@ import { NumsService } from './nums.service';
 import { NumsController } from './nums.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Num, NumSchema } from './entities/num.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [NumsController],
@@ -14,6 +15,7 @@ import { Num, NumSchema } from './entities/num.entity';
         schema: NumSchema,
       },
     ]),
+    AuthModule,
   ],
   exports: [MongooseModule],
 })

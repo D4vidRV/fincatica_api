@@ -8,19 +8,15 @@ import {
   Delete,
   Optional,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 import { AuctionsService } from './auctions.service';
-import { CreateAuctionDto } from './dto/create-auction.dto';
-import { UpdateAuctionDto } from './dto/update-auction.dto';
 
 @Controller('auctions')
 export class AuctionsController {
   constructor(private readonly auctionsService: AuctionsService) {}
-
-  @Post()
-  create(@Body() createAuctionDto: CreateAuctionDto) {
-    return this.auctionsService.create(createAuctionDto);
-  }
 
   @Get()
   getAllAuctionNames() {
@@ -28,6 +24,7 @@ export class AuctionsController {
   }
 
   @Get('/last_prices')
+  @UseGuards(AuthGuard())
   getLastAuctionPricesByName(
     @Optional() @Query('auction_name') auction_name?: string,
   ) {
@@ -40,6 +37,7 @@ export class AuctionsController {
   }
 
   @Get('/months_by_name_and_year')
+  @UseGuards(AuthGuard())
   getMonthsByNameAndYear(
     @Query('auction_name') auction_name?: string,
     @Query('year') year?: number,
@@ -48,6 +46,7 @@ export class AuctionsController {
   }
 
   @Get('/auctions_by_name_and_date')
+  @UseGuards(AuthGuard())
   getAuctionDatesByNameYearMonth(
     @Query('auction_name') auction_name?: string,
     @Query('year') year?: number,
@@ -61,24 +60,11 @@ export class AuctionsController {
   }
 
   @Get('/prices_by_name_and_auction')
+  @UseGuards(AuthGuard())
   findPricesByNameAndAuction(
     @Query('auction_name') auction_name?: string,
     @Query('date') date?: Date,
   ) {
     return this.auctionsService.findPricesByNameAndAuction(auction_name, date);
   }
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.auctionsService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuctionDto: UpdateAuctionDto) {
-  //   return this.auctionsService.update(+id, updateAuctionDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.auctionsService.remove(+id);
-  // }
 }
